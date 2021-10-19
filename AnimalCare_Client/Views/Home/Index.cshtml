@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Anim'Appel</h1>
+</div>
+@(await Html.RenderComponentAsync<App>(RenderMode.ServerPrerendered))
+@*<component type="typeof(App)" render-mode="ServerPrerendered" />*@
+
+@section Header{
+    <base href="~/" />
+}
+
+<script src="_framework/blazor.server.js"></script>
+
+
+
+

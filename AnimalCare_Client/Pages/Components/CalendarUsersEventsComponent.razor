@@ -1,0 +1,130 @@
+﻿ <section>
+    @if (listUsers != null)
+    {
+        foreach (var user in listUsers.ToList())
+        {
+
+
+            <p> @user.IdUser</p>
+            <p> @user.Username</p>
+
+            @*<input type="button" class="nav-link" @onclick="()=>GetSpecialiste(user.IdUser)" value="spécialiste">*@
+
+
+
+            <a href="Specialiste/@user.IdUser">@user.Username</a>
+            @*<a href ="Home/Specialiste/@user.IdUser">@user.Username ici passe controller</a>*@
+
+ 
+            @*<input type="submit"  @onclick="()=>GetSpecialiste(user.IdUser)" value ="LeInput" />*@
+            @*<a href="Home/Specialiste/@user.IdUser"> @user.Username</a>*@
+
+            @*<a href="Home/Specialiste/@userModel.IdUser">Voir la fiche</a>*@
+
+            <div class="container">
+
+
+                @foreach (var dic in user.Calendar.DictionaryMonth.ToList())
+                {
+                    if (dic.Key == user.Calendar.currentMonth)
+                    {
+                        <p class="text-center">
+                            @if (user.Calendar.currentMonth <= DateTime.Now.Month && user.Calendar.currentYear <= DateTime.Now.Year)
+                            {
+                                <button class="btn btn-danger">Prev Month</button>
+
+                            }
+                            else
+                            {
+                                <button class="btn btn-primary" @onclick="user.Calendar.PrevMonth">Prev Month</button>
+
+                            }
+                            <strong>   @dic.Value  @user.Calendar.currentYear </strong>
+                            <button class="btn btn-primary" @onclick="user.Calendar.NextMonth">Next Month</button>
+
+                        </p>
+
+                    }
+                }
+
+            </div><p class="text-center mt-5 mb-0">
+
+                @if (user.Calendar.currentYear <= DateTime.Now.Year && user.Calendar.currentMonth <= DateTime.Now.Month)
+                {
+                    <button class="btn btn-danger" @onclick="user.Calendar.PrevWeekInCurrentMonth">Prev Week</button>
+                }
+                else
+                {
+
+                    <button class="btn btn-primary" @onclick="user.Calendar.PrevWeekInNextMonth">Prev Week</button>
+                }
+                <button class="btn btn-primary" @onclick="user.Calendar.NextWeek">Next Week</button>
+            </p>
+            <table class="container">
+                <tr style="  display: flex;justify-content:flex-start; flex-wrap: wrap;  width: 100% ;margin:50px">
+
+                    @for (int i = 0; i < user.Calendar.DaysInMonth + 1; i++)
+                    {
+                        if (i >= user.Calendar.DaysInMonth || i >= user.Calendar.DaysInMonth - 6)
+                        {
+
+                    <td style="border:solid 1px black; background-color:yellow;width:100px;">
+
+
+
+                        @i.ToString()
+
+
+
+
+                        @user.Calendar.GetStartDate(user.Calendar.currentYear, user.Calendar.currentMonth, out int Day).AddDays(i - 1).ToString("ddd")
+
+
+
+                        @foreach (var ev in user.Events.Where(a => a.Status == "disponible"))
+                        {
+                            @if (ev.Status != null && user.Calendar.currentMonth == ev.DateEvent.Month && user.Calendar.currentYear == ev.DateEvent.Year && i == ev.DateEvent.Day)
+                            {
+                                @*<p class="bg-success">@ev.DateEvent.ToString("HH:mm")  </p>*@
+                                @*<a href="reservation/@ev.IdEvent">
+                    <input style="max-width: 100px; display: flex; justify-content: center; flex-wrap: wrap; cursor: pointer" value="@ev.DateEvent.ToString("HH:mm") " />
+
+                </a>*@
+                                @*<a href="Home/Reservation/@ev.IdEvent">
+                                    <input style="max-width: 100px; display: flex; justify-content: center; flex-wrap: wrap; cursor: pointer" value="@ev.DateEvent.ToString("HH:mm") " />
+
+                                </a>*@
+                                <a href="Specialiste/Reservation/@ev.IdEvent">
+                                    <input style="max-width: 100px; display: flex; justify-content: center; flex-wrap: wrap; cursor: pointer" value="@ev.DateEvent.ToString("HH:mm") " />
+                                </a>
+                                @*<input style="max-width: 100px; display: flex; justify-content: center; flex-wrap: wrap;" @onchange="@(handleChangeAsync)" value="@ev.Status " />*@
+                            }
+
+
+
+
+
+
+                        }
+
+                    </td>
+
+                        }
+
+                    }
+
+                </tr>
+
+            </table>
+
+
+        }
+
+    }
+</section>
+
+@code{
+    [Parameter]
+    public List<UserModel> listUsers { get; set; }
+
+}

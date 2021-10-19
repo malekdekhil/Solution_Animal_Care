@@ -1,0 +1,119 @@
+﻿<h3>Specialiste</h3>
+
+
+
+
+<input type="text" @bind-value="_User.Username" />
+<input type="text" @bind-value="_User.Address" />
+<input type="text" @bind-value="_User.StreetInfo" />
+<input type="text" @bind-value="_User.City" />
+<input type="text" @bind-value="_User.ZipCode" />
+
+
+
+
+
+<div class="container">
+
+    @foreach (var dic in _User.Calendar.DictionaryMonth.ToList())
+    {
+        if (dic.Key == _User.Calendar.currentMonth)
+        {
+            <p class="text-center">
+                @if (_User.Calendar.currentMonth <= DateTime.Now.Month && _User.Calendar.currentYear <= DateTime.Now.Year)
+                {
+                    <button class="btn btn-danger">Prev Month</button>
+
+                }
+                else
+                {
+                    <button class="btn btn-primary" @onclick="_User.Calendar.PrevMonth">Prev Month</button>
+
+                }
+                <strong>   @dic.Value  @_User.Calendar.currentYear </strong>
+                <button class="btn btn-primary" @onclick="_User.Calendar.NextMonth">Next Month</button>
+
+            </p>
+
+        }
+    }
+
+</div>
+
+<p class="text-center mt-5 mb-0">
+    @if (_User.Calendar.currentYear <= DateTime.Now.Year && _User.Calendar.currentMonth <= DateTime.Now.Month)
+    {
+        <button class="btn btn-danger" @onclick="_User.Calendar.PrevWeekInCurrentMonth">Prev Week</button>
+    }
+    else
+    {
+
+        <button class="btn btn-primary" @onclick="_User.Calendar.PrevWeekInNextMonth">Prev Week</button>
+    }
+    <button class="btn btn-primary" @onclick="_User.Calendar.NextWeek">Next Week</button>
+</p>
+<table class="container">
+    <tr style="  display: flex;justify-content:flex-start; flex-wrap: wrap;  width: 100% ;margin:50px">
+
+        @for (int i = 0; i < _User.Calendar.DaysInMonth + 1; i++)
+        {
+            if (i >= _User.Calendar.DaysInMonth || i >= _User.Calendar.DaysInMonth - 6)
+            {
+
+                <td style="border:solid 1px black; background-color:yellow;width:100px;">
+
+                    @i.ToString()
+
+                    @if (_User.Calendar.currentYear > 0 && _User.Calendar.currentMonth > 0)
+                    {
+                        @_User.Calendar.GetStartDate(_User.Calendar.currentYear, _User.Calendar.currentMonth, out int Day).AddDays(i - 1).ToString("ddd")
+
+                    }
+                    else
+                    {
+
+                    }
+
+
+
+                    @foreach (var ev in _User.Events.Where(a => a.Status == "disponible").ToList())
+                    {
+                        @if (ev.Status != null && _User.Calendar.currentMonth == ev.DateEvent.Month && _User.Calendar.currentYear == ev.DateEvent.Year && i == ev.DateEvent.Day)
+                        {
+                            @*<p class="bg-success">@ev.DateEvent.ToString("HH:mm")  </p>*@
+                    <a href="Specialiste/Reservation/@ev.IdEvent">
+                        <input style="max-width: 100px; display: flex; justify-content: center; flex-wrap: wrap; cursor: pointer" value="@ev.DateEvent.ToString("HH:mm") " />
+                    </a>
+                            @*<input style="max-width: 100px; display: flex; justify-content: center; flex-wrap: wrap;" @onchange="@(handleChangeAsync)" value="@ev.Status " />*@
+                 
+                        }
+
+
+
+
+
+                    }
+
+                </td>
+
+            }
+
+        }
+
+
+
+
+    </tr>
+
+</table>
+
+
+
+@code {
+    [Parameter]
+    public UserModel _User { get; set; }   
+ 
+
+
+}
+ 
